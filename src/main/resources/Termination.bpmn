@@ -186,7 +186,21 @@
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="ProductionMESEmployeeOnly" label="Is the terminated employee a production employee that only used MES?" type="boolean" />
+          <camunda:formField id="UserName" label="User Name" type="string" defaultValue="${Username}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="NameOfEmployeeToTerminate" label="Name of employee to terminate" type="string" defaultValue="${NameOfEmployeeToTerminate}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
         </camunda:formData>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="NameOfEmployeeToTerminate">${NameOfEmployeeToTerminate}</camunda:inputParameter>
+          <camunda:inputParameter name="Username">${Username}</camunda:inputParameter>
+        </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0jbhhgl</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_19tbrvg</bpmn:outgoing>
@@ -285,12 +299,8 @@
     <bpmn:serviceTask id="ServiceTask_1wgblf2" name="Get username of employee to terminate" camunda:type="external" camunda:topic="Get-ADUserSAMAccountNameFromName">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="Name">
-            <camunda:script scriptFormat="groovy"><![CDATA["${NameOfEmployeeToTerminate}".toString()]]></camunda:script>
-          </camunda:inputParameter>
-          <camunda:outputParameter name="Username">
-            <camunda:script scriptFormat="groovy"><![CDATA["${Response}".toString()]]></camunda:script>
-          </camunda:outputParameter>
+          <camunda:inputParameter name="Name">${NameOfEmployeeToTerminate}</camunda:inputParameter>
+          <camunda:outputParameter name="Username">${Response}</camunda:outputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_09kahf6</bpmn:incoming>
@@ -301,12 +311,6 @@
     <bpmn:userTask id="UserTask_0sm1utg" name="Confirm the employee being terminated is the right one">
       <bpmn:extensionElements>
         <camunda:formData />
-        <camunda:inputOutput>
-          <camunda:inputParameter name="NameOfEmployeeToTerminate">
-            <camunda:script scriptFormat="groovy">${NameOfEmployeeToTerminate}</camunda:script>
-          </camunda:inputParameter>
-          <camunda:inputParameter name="Username">${Username}</camunda:inputParameter>
-        </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1xkbh6y</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0jbhhgl</bpmn:outgoing>
