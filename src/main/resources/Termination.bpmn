@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.1.1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.2.1">
   <bpmn:collaboration id="Collaboration_1uf4efo">
     <bpmn:participant id="Participant_02z7z2r" name="Tervis" processRef="Process_1" />
   </bpmn:collaboration>
@@ -22,13 +22,13 @@
         <bpmn:flowNodeRef>ParallelGateway_0798y40</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>UserTask_0oc3uu6</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ParallelGateway_00uhgyt</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>UserTask_0nvzkx8</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExclusiveGateway_1w1zt6k</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>UserTask_0uhrg9t</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>IntermediateCatchEvent_1nc023g</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>UserTask_0z425v1</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>EndEvent_1hdwj2x</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>UserTask_0sm1utg</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_0nvzkx8</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_0kc7obr" name="Requestor">
         <bpmn:flowNodeRef>StartEvent_0vgqzk3</bpmn:flowNodeRef>
@@ -181,30 +181,6 @@
       <bpmn:incoming>SequenceFlow_0hezzw9</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_11n77xn</bpmn:outgoing>
     </bpmn:parallelGateway>
-    <bpmn:userTask id="UserTask_0nvzkx8" name="Determine if the Employee only worked in Production MES" camunda:candidateGroups="Help Desk">
-      <bpmn:documentation><![CDATA[<br /><br /><a href="evernote:///view/17973/s270/9e470272-3459-4c83-a93a-78256c58b3d3/9e470272-3459-4c83-a93a-78256c58b3d3/1d8e177e-6760-45bd-a37f-174755faf018">Evernote link</a>h]]></bpmn:documentation>
-      <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="ProductionMESEmployeeOnly" label="Is the terminated employee a production employee that only used MES?" type="boolean" />
-          <camunda:formField id="UserName" label="User Name" type="string" defaultValue="${Username}">
-            <camunda:validation>
-              <camunda:constraint name="readonly" />
-            </camunda:validation>
-          </camunda:formField>
-          <camunda:formField id="NameOfEmployeeToTerminate" label="Name of employee to terminate" type="string" defaultValue="${NameOfEmployeeToTerminate}">
-            <camunda:validation>
-              <camunda:constraint name="readonly" />
-            </camunda:validation>
-          </camunda:formField>
-        </camunda:formData>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="NameOfEmployeeToTerminate">${NameOfEmployeeToTerminate}</camunda:inputParameter>
-          <camunda:inputParameter name="Username">${Username}</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>SequenceFlow_0jbhhgl</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_19tbrvg</bpmn:outgoing>
-    </bpmn:userTask>
     <bpmn:exclusiveGateway id="ExclusiveGateway_1w1zt6k" name="Production MES only employee?">
       <bpmn:incoming>SequenceFlow_19tbrvg</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1iyzg07</bpmn:outgoing>
@@ -271,7 +247,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_1eguqly" sourceRef="ParallelGateway_1gv3w09" targetRef="UserTask_09z4tyn" />
     <bpmn:sequenceFlow id="SequenceFlow_1yens22" sourceRef="UserTask_09z4tyn" targetRef="ParallelGateway_00uhgyt" />
     <bpmn:sequenceFlow id="SequenceFlow_0xz3um4" name="No" sourceRef="ExclusiveGateway_1w1zt6k" targetRef="ParallelGateway_1gv3w09">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!ProductionMESEmployeeOnly}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!EmployeeOnlyInMES}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_0spt63z" sourceRef="ParallelGateway_1gv3w09" targetRef="UserTask_0stzupg" />
     <bpmn:sequenceFlow id="SequenceFlow_1plvh3j" sourceRef="ParallelGateway_1gv3w09" targetRef="UserTask_0tkyk9c" />
@@ -288,7 +264,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_14fzs2g" sourceRef="ParallelGateway_0798y40" targetRef="IntermediateCatchEvent_1nc023g" />
     <bpmn:sequenceFlow id="SequenceFlow_0hezzw9" sourceRef="ParallelGateway_0798y40" targetRef="ParallelGateway_00uhgyt" />
     <bpmn:sequenceFlow id="SequenceFlow_1iyzg07" name="Yes" sourceRef="ExclusiveGateway_1w1zt6k" targetRef="UserTask_0oc3uu6">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${ProductionMESEmployeeOnly}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${EmployeeOnlyInMES}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_1n464ut" sourceRef="IntermediateCatchEvent_1nc023g" targetRef="UserTask_0oc3uu6" />
     <bpmn:sequenceFlow id="SequenceFlow_089reig" sourceRef="UserTask_0oc3uu6" targetRef="EndEvent_1hdwj2x" />
@@ -296,11 +272,11 @@
     <bpmn:sequenceFlow id="SequenceFlow_19tbrvg" sourceRef="UserTask_0nvzkx8" targetRef="ExclusiveGateway_1w1zt6k" />
     <bpmn:sequenceFlow id="SequenceFlow_02qb9kb" sourceRef="UserTask_0uhrg9t" targetRef="UserTask_1nanz8i" />
     <bpmn:sequenceFlow id="SequenceFlow_1en58cv" sourceRef="UserTask_0z425v1" targetRef="EndEvent_1hdwj2x" />
-    <bpmn:serviceTask id="ServiceTask_1wgblf2" name="Get username of employee to terminate" camunda:type="external" camunda:topic="Get-ADUserSAMAccountNameFromName">
+    <bpmn:serviceTask id="ServiceTask_1wgblf2" name="Get username of employee to terminate" camunda:type="external" camunda:topic="Get-BPMNADUserSAMAccountNameFromName">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="Name">${NameOfEmployeeToTerminate}</camunda:inputParameter>
-          <camunda:outputParameter name="Username">${Response}</camunda:outputParameter>
+          <camunda:outputParameter name="Username">${SAMAccountName}</camunda:outputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_09kahf6</bpmn:incoming>
@@ -308,13 +284,29 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="SequenceFlow_1xkbh6y" sourceRef="ServiceTask_1wgblf2" targetRef="UserTask_0sm1utg" />
     <bpmn:sequenceFlow id="SequenceFlow_0jbhhgl" sourceRef="UserTask_0sm1utg" targetRef="UserTask_0nvzkx8" />
-    <bpmn:userTask id="UserTask_0sm1utg" name="Confirm the employee being terminated is the right one">
+    <bpmn:userTask id="UserTask_0sm1utg" name="Confirm the employee being terminated is the right one" camunda:candidateGroups="Help Desk">
       <bpmn:extensionElements>
-        <camunda:formData />
+        <camunda:formData>
+          <camunda:formField id="NameOfEmployeeToTerminate" label="Name of the employee to terminate" type="string" defaultValue="${NameOfEmployeeToTerminate}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Username" label="Username that we think belongs to the user who we are terminating" type="string" defaultValue="${Username}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="UsernameIsCorrect" label="Is the username the right one for the employee we are terminating?" type="boolean" />
+        </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1xkbh6y</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0jbhhgl</bpmn:outgoing>
     </bpmn:userTask>
+    <bpmn:serviceTask id="UserTask_0nvzkx8" name="Determine if the Employee only worked in Production MES" camunda:type="external" camunda:topic="Get-BPMNEmployeeOnlyInMES">
+      <bpmn:incoming>SequenceFlow_0jbhhgl</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_19tbrvg</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmn:error id="Error_1q55cbj" name="Error_28l9ci5" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -642,7 +634,7 @@
         <di:waypoint xsi:type="dc:Point" x="558" y="1575" />
         <di:waypoint xsi:type="dc:Point" x="596" y="1575" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="532" y="1433" width="90" height="20" />
+          <dc:Bounds x="532" y="1550" width="90" height="20" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1iyzg07_di" bpmnElement="SequenceFlow_1iyzg07">
@@ -661,9 +653,6 @@
           <dc:Bounds x="661" y="1546" width="90" height="20" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_0nvzkx8_di" bpmnElement="UserTask_0nvzkx8">
-        <dc:Bounds x="458" y="1535" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1c74hou_di" bpmnElement="SequenceFlow_1c74hou">
         <di:waypoint xsi:type="dc:Point" x="941" y="523" />
         <di:waypoint xsi:type="dc:Point" x="1065" y="523" />
@@ -747,9 +736,12 @@
         <di:waypoint xsi:type="dc:Point" x="303" y="1575" />
         <di:waypoint xsi:type="dc:Point" x="458" y="1575" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="335.5" y="1554" width="90" height="20" />
+          <dc:Bounds x="335.5" y="1550" width="90" height="20" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0jd3vnd_di" bpmnElement="UserTask_0nvzkx8">
+        <dc:Bounds x="458" y="1535" width="100" height="80" />
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
